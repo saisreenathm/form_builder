@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const formRoutes = require("./routes/formRoutes");
 
 const app = express();
 
@@ -9,7 +10,10 @@ connectDB();
 
 // Middleware
 app.use(cors()); // Enable CORS
+
 app.use(express.json()); // Parse incoming JSON requests
+
+app.use("/api/forms", formRoutes);
 
 // Test route
 app.get("/", (req, res) => {
