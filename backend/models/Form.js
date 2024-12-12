@@ -19,18 +19,27 @@ const questionSchema = new mongoose.Schema({
 });
 
 const formSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: false,
-  },
-  questions: [questionSchema], // Array of questions
-  headerImage: {
-    type: String, // URL to the header image
-  },
+  title: { type: String, required: true },
+  description: { type: String },
+  questions: [
+    {
+      questionText: { type: String, required: true },
+      questionType: {
+        type: String,
+        enum: ["text", "grid", "checkbox"],
+        required: true,
+      },
+      options: [String], // For grid or checkbox
+    },
+  ],
+  shareToken: { type: String, unique: true },
+});
+
+formSchema.pre("save", function (next) {
+  if (!this.shareToken) {
+    this.shareToken = Math.random().toString(36).substr(2, 9); // Generate a random 9-char token
+  }
+  next();
 });
 
 const Form = mongoose.model("Form", formSchema);
